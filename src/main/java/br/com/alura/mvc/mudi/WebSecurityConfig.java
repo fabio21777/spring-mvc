@@ -19,7 +19,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .anyRequest().authenticated()
                 .and()
-                .httpBasic();
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/home")
+                        .failureForwardUrl("/login?error=true")
+                        .permitAll()
+                ).logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login"));
+        ;
+
     }
 
     @Bean
@@ -29,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 User.withDefaultPasswordEncoder()
                         .username("joao")
                         .password("joao")
-                        .roles("USER")
+                        .roles("ADM")
                         .build();
 
         return new InMemoryUserDetailsManager(user);
